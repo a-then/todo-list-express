@@ -15,6 +15,7 @@ Array.from(itemCompleted).forEach((element)=>{
 })
 
 async function deleteItem(){
+    // childNodes contains an array of all the html files and accounts for line breaks. this.parentNode.children[1].innerText is a better option because only counts html tags
     const itemText = this.parentNode.childNodes[1].innerText
     try{
         const response = await fetch('deleteItem', {
@@ -28,7 +29,7 @@ async function deleteItem(){
         console.log(data)
         location.reload()
 
-    }catch(err){
+    } catch(err){
         console.log(err)
     }
 }
