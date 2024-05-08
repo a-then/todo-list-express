@@ -1,18 +1,16 @@
-// ADD NECESSARY PACKAGES:
+// Import NECESSARY PACKAGES:
 
 // Importing Express - a fast, unopinionated, minimalist web framework for Node.js.
 const express = require('express')
 // cors allows clients to make request to an external back-end server.
 var cors = require('cors')
-// assign express to a variable to call all express methods on
-const app = express()
 // Importing the official MongoDB Node.js driver to connect to a MongoDB cluster hosted on MongoDB Atlas
 const MongoClient = require('mongodb').MongoClient
-
 // new recommended package over dotenv to handle enviroment variables
 require('@dotenvx/dotenvx').config()
 
-
+// assign express to a variable to call all express methods on
+const app = express()
 
 //defining port for our app to listen to: 
 //whatever is in the env var PORT OR default 2121
@@ -20,7 +18,7 @@ const PORT =  process.env.PORT || 2121
 
 
 // defining vars to interact with database
-let db, // declared now, defined on line 28 ~ ideally this should be within MongoClient's then call along with all handlers
+let db, // declared now, defined on line 30 ~ ideally this should be within MongoClient's then call along with all handlers
     dbConnectionStr = process.env.DB_STRING, // this enviroment variable contains connecting string
     dbName = 'todo' // defining a name for a database 'todo'
 
@@ -29,17 +27,18 @@ MongoClient.connect(dbConnectionStr)
     // attaching function for resolution of the Promise.
     .then(client => { 
         console.log(`Connected to ${dbName} Database`)
-        db = client.db(dbName) // creating a new database instance named 'todo'. We will apply MongoDb methods to db 
+        db = client.db(dbName) // creating a new database instance named 'todo'. We will apply MongoDb operators to db 
     }) // there's no catch for errors smh nononononoooooo
 
-// Setting express to use Embedded JS templates to render the HTML. It needs to be placed before any handlers | .use, .get, .post methods |     
+// Setting express to use Embedded JS templates to render the HTML. It needs to be placed before 
+// any handlers { .use, .get, .post methods }     
 app.set('view engine', 'ejs')
 
 // EXPRESS MIDDLEWARES:
 
 // static serves static files and takes the file name and options as params
 app.use(express.static('public'))
-// express' body-parser to tidy up the request object before we use them. urlencoded extracts data from the <form> element and add them to the body property in the request object
+// express' body-parser to tidy up the request objects before we use them. urlencoded extracts data from the <form> element and add them to the body property in the request object
 app.use(express.urlencoded({ extended: true }))
 // allows our server to handle json data
 app.use(express.json())
@@ -55,14 +54,15 @@ app.get('/',async (request, response)=>{
     // render view with the given data options 
     response.render('index.ejs', { items: todoItems, left: itemsLeft })
 // old then/catch syntax handling the Promise the exact same way   
-    // db.collection('todos').find().toArray()
-    // .then(data => {
-    //     db.collection('todos').countDocuments({completed: false})
-    //     .then(itemsLeft => {
-    //         response.render('index.ejs', { items: data, left: itemsLeft })
-    //     })
-    // })
-    // .catch(error => console.error(error))
+    /* db.collection('todos').find().toArray()
+    .then(data => {
+        db.collection('todos').countDocuments({completed: false})
+        .then(itemsLeft => {
+            response.render('index.ejs', { items: data, left: itemsLeft })
+        })
+    })
+    .catch(error => console.error(error))
+    */
 })
 
 // HTTP request to CREATE a document in our database. Takes a route and a callback function as params
@@ -100,9 +100,11 @@ app.put('/markComplete', (request, response) => {
     // handles any errors by console logging it
     .catch(error => console.error(error))
 })
-// another http request to UPDATE a document in our database. Takes a route and a callback function as params
+// another http request to UPDATE a document in our database. Takes a route and a callback function as params // NOT WORKING
 app.put('/markUnComplete', (request, response) => {
+    // grabs the collection and use one of mongoDb write operations to modify a document. .updateOne() can modify fields and values. thing is the name of the property key in the db. itemFromJS is the innerText of the li element // NOT WORKING
     db.collection('todos').updateOne({thing: request.body.itemFromJS},{
+        // update operator to replace the value of a field with a specified one
         $set: {
             completed: false
           }

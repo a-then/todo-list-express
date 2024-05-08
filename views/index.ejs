@@ -24,13 +24,17 @@
     <body>
         <h1>Todo List: </h1>
         <ul class="todoItems">
+            <!-- EJS iterates thru items in our list  -->
             <% for(let i=0; i < items.length; i++) {%>
+                <!-- this li innerText becomes our itemfromJS client side and added as value to the key 'thing' server side-->
                 <li class="item">
+                    <!-- and creates a new span containing the item text with a class of completed if so -->
                     <% if(items[i].completed===true) {%>
                         <span class='completed'>
                             <%= items[i].thing %>
                         </span>
                         <% }else{ %>
+                            <!-- or just adds the thing -->
                             <span>
                                 <%= items[i].thing %>
                             </span>
@@ -39,14 +43,15 @@
                 </li>
                 <% } %>
         </ul>
-
+        <!-- EJS adds a count of uncompleted things -->
         <h2>Left to do: <%= left %>
         </h2>
 
         <h2>Add A Todo:</h2>
-
+        <!-- form to submit our POST request to our API
+        action property sets the endpoint, method property the type of req-->
         <form action="/addTodo" method="POST">
-            <input type="text" placeholder="Thing To Do" name="todoItem">
+            <input type="text" placeholder="Thing To Do" name="todoItem"> <!-- this text becomes our to do item  -->
             <input type="submit">
         </form>
 
